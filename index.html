@@ -17,7 +17,7 @@
             display: block;
             margin-bottom: 5px;
         }
-        input {
+        input, select, textarea {
             width: 100%;
             padding: 8px;
             box-sizing: border-box;
@@ -32,29 +32,76 @@
     </style>
 </head>
 <body>
-    <h1>Введите текст</h1>
-    <form id="textForm">
+    <h1>Добавить запись</h1>
+    <form id="recordForm">
         <div class="form-group">
-            <label for="textInput">Текст:</label>
-            <input type="text" id="textInput" required>
+            <label for="drawingName">Название чертежа:</label>
+            <input type="text" id="drawingName" required>
         </div>
-        <button type="submit">Отправить</button>
+        <div class="form-group">
+            <label for="operationType">Тип операции:</label>
+            <select id="operationType" required>
+                <option value="Токарная">Токарная</option>
+                <option value="Фрезерная">Фрезерная</option>
+                <option value="Слесарная">Слесарная</option>
+                <option value="Шлифовальная">Шлифовальная</option>
+                <option value="Сверлильная">Сверлильная</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="productCount">Количество изделий:</label>
+            <input type="number" id="productCount" required>
+        </div>
+        <div class="form-group">
+            <label for="setupTime">Время настройки (в часах):</label>
+            <input type="number" step="0.1" id="setupTime" required>
+        </div>
+        <div class="form-group">
+            <label for="manufacturingTime">Время изготовления (в часах):</label>
+            <input type="number" step="0.1" id="manufacturingTime" required>
+        </div>
+        <div class="form-group">
+            <label for="defect">Есть ли дефект?</label>
+            <select id="defect" required>
+                <option value="1">Да</option>
+                <option value="0">Нет</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="causeOfDefect">Причина дефекта:</label>
+            <textarea id="causeOfDefect"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="notes">Примечания:</label>
+            <textarea id="notes"></textarea>
+        </div>
+        <button type="submit">Сохранить</button>
     </form>
 
     <script>
-        const form = document.getElementById('textForm');
+        const form = document.getElementById('recordForm');
 
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const text = document.getElementById('textInput').value;
+            const data = {
+                drawingName: document.getElementById('drawingName').value,
+                operationType: document.getElementById('operationType').value,
+                productCount: document.getElementById('productCount').value,
+                setupTime: document.getElementById('setupTime').value,
+                manufacturingTime: document.getElementById('manufacturingTime').value,
+                defect: document.getElementById('defect').value,
+                causeOfDefect: document.getElementById('causeOfDefect').value,
+                notes: document.getElementById('notes').value,
+            };
 
-            console.log("Текст для отправки:", text);  // Логирование текста
+            console.log("Данные для отправки:", data);  // Логирование данных
 
+            // Проверка инициализации Telegram WebApp SDK
             if (window.Telegram && Telegram.WebApp) {
                 console.log("Telegram WebApp SDK загружен!");
-                Telegram.WebApp.sendData(text);
-                console.log("Текст отправлен!");
+                Telegram.WebApp.sendData(JSON.stringify(data));
+                console.log("Данные отправлены!");
                 Telegram.WebApp.close(); // Закрываем Mini App
             } else {
                 console.error("Telegram WebApp SDK не загружен!");
