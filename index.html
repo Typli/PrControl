@@ -81,24 +81,26 @@
     <script>
         const form = document.getElementById('recordForm');
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-            const data = {
-                drawingName: document.getElementById('drawingName').value,
-                operationType: document.getElementById('operationType').value,
-                productCount: document.getElementById('productCount').value,
-                setupTime: document.getElementById('setupTime').value,
-                manufacturingTime: document.getElementById('manufacturingTime').value,
-                defect: document.getElementById('defect').value,
-                causeOfDefect: document.getElementById('causeOfDefect').value,
-                notes: document.getElementById('notes').value,
-            };
+    const data = {
+        drawingName: document.getElementById('drawingName').value,
+        operationType: document.getElementById('operationType').value,
+        productCount: document.getElementById('productCount').value,
+        setupTime: document.getElementById('setupTime').value,
+        manufacturingTime: document.getElementById('manufacturingTime').value,
+        defect: document.getElementById('defect').value,
+        causeOfDefect: document.getElementById('causeOfDefect').value,
+        notes: document.getElementById('notes').value,
+    };
 
-            // Отправляем данные в бота
-            Telegram.WebApp.sendData(JSON.stringify(data));
-            Telegram.WebApp.close(); // Закрываем Mini App
-        });
+    console.log("Данные для отправки:", data);  // Логирование данных
+
+    // Отправляем данные в бота
+    Telegram.WebApp.sendData(JSON.stringify(data));
+    Telegram.WebApp.close(); // Закрываем Mini App
+});
     </script>
 </body>
 </html>
