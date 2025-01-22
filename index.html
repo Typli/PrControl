@@ -95,11 +95,17 @@
                 notes: document.getElementById('notes').value,
             };
 
-            console.log("Данные для отправкииии:", data);  // Логирование данных
+            console.log("Данные для отправки:", data);  // Логирование данных
 
-            // Отправляем данные в бота
-            Telegram.WebApp.sendData(JSON.stringify(data));
-            Telegram.WebApp.close(); // Закрываем Mini App
+            // Проверка инициализации Telegram WebApp SDK
+            if (window.Telegram && Telegram.WebApp) {
+                console.log("Telegram WebApp SDK загружен!");
+                Telegram.WebApp.sendData(JSON.stringify(data));
+                console.log("Данные отправлены!");
+                Telegram.WebApp.close(); // Закрываем Mini App
+            } else {
+                console.error("Telegram WebApp SDK не загружен!");
+            }
         });
     </script>
 </body>
