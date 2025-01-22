@@ -87,17 +87,31 @@
                 allowClear: true
             });
 
-            // Загрузка вариантов для "Название чертежа" (можно загрузить через API)
-            const drawingNames = ["Чертеж 1", "Чертеж 2", "Чертеж 3", "Чертеж 4"];
-            drawingNames.forEach(name => {
-                $('#drawingName').append(new Option(name, name));
-            });
+            // Функция для загрузки данных из Google Sheets
+            async function loadDataFromGoogleSheets() {
+                const apiKey = 'ВАШ_API_КЛЮЧ'; // Замените на ваш API-ключ
+                const spreadsheetId = 'ВАШ_ID_ТАБЛИЦЫ'; // Замените на ID вашей таблицы
+                const range = 'Лист1!A2:B'; // Диапазон данных (например, столбцы A и B)
 
-            // Загрузка вариантов для "Тип операции" (можно загрузить через API)
-            const operationTypes = ["Токарная", "Фрезерная", "Слесарная", "Шлифовальная", "Сверлильная"];
-            operationTypes.forEach(type => {
-                $('#operationType').append(new Option(type, type));
-            });
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    const rows = data.values;
+
+                    // Заполняем выпадающие списки
+                    rows.forEach(row => {
+                        $('#drawingName').append(new Option(row[0], row[0])); // Первый столбец — названия чертежей
+                        $('#operationType').append(new Option(row[1], row[1])); // Второй столбец — типы операций
+                    });
+                } catch (error) {
+                    console.error('Ошибка при загрузке данных из Google Sheets:', error);
+                }
+            }
+
+            // Загружаем данные при открытии Mini App
+            loadDataFromGoogleSheets();
 
             // Обработка отправки формы
             const form = document.getElementById('recordForm');
