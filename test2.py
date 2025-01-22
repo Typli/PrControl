@@ -7,7 +7,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 # Токен вашего бота
-API_TOKEN = '8143935303:AAFMFtTEWgyXFp2BM5h0w5ZB-CM7NgKXHh8'
+API_TOKEN =
 
 # Инициализация бота и диспетчера
 bot = Bot(token=API_TOKEN)
