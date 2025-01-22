@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -37,14 +36,16 @@
     <form id="recordForm">
         <div class="form-group">
             <label for="drawingName">Название чертежа:</label>
-            <select id="drawingName" class="js-example-basic-single" required>
-                <!-- Варианты будут загружены через JavaScript -->
-            </select>
+            <input type="text" id="drawingName" required>
         </div>
         <div class="form-group">
             <label for="operationType">Тип операции:</label>
-            <select id="operationType" class="js-example-basic-single" required>
-                <!-- Варианты будут загружены через JavaScript -->
+            <select id="operationType" required>
+                <option value="Токарная">Токарная</option>
+                <option value="Фрезерная">Фрезерная</option>
+                <option value="Слесарная">Слесарная</option>
+                <option value="Шлифовальная">Шлифовальная</option>
+                <option value="Сверлильная">Сверлильная</option>
             </select>
         </div>
         <div class="form-group">
@@ -77,67 +78,34 @@
         <button type="submit">Сохранить</button>
     </form>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-        $(document).ready(function() {
-            // Инициализация Select2 для выпадающих списков
-            $('.js-example-basic-single').select2({
-                placeholder: "Выберите значение",
-                allowClear: true
-            });
+        const form = document.getElementById('recordForm');
 
-            // Функция для загрузки данных из Google Sheets
-            async function loadDataFromGoogleSheets() {
-                const apiKey = 'ВАШ_API_КЛЮЧ'; // Замените на ваш API-ключ
-                const spreadsheetId = 'ВАШ_ID_ТАБЛИЦЫ'; // Замените на ID вашей таблицы
-                const range = 'Лист1!A2:B'; // Диапазон данных (например, столбцы A и B)
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-                const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+            const data = {
+                drawingName: document.getElementById('drawingName').value,
+                operationType: document.getElementById('operationType').value,
+                productCount: document.getElementById('productCount').value,
+                setupTime: document.getElementById('setupTime').value,
+                manufacturingTime: document.getElementById('manufacturingTime').value,
+                defect: document.getElementById('defect').value,
+                causeOfDefect: document.getElementById('causeOfDefect').value,
+                notes: document.getElementById('notes').value,
+            };
 
-                try {
-                    const response = await fetch(url);
-                    const data = await response.json();
-                    const rows = data.values;
+            console.log("Данные для отправки:", data);  // Логирование данных
 
-                    // Заполняем выпадающие списки
-                    rows.forEach(row => {
-                        $('#drawingName').append(new Option(row[0], row[0])); // Первый столбец — названия чертежей
-                        $('#operationType').append(new Option(row[1], row[1])); // Второй столбец — типы операций
-                    });
-                } catch (error) {
-                    console.error('Ошибка при загрузке данных из Google Sheets:', error);
-                }
+            // Проверка инициализации Telegram WebApp SDK
+            if (window.Telegram && Telegram.WebApp) {
+                console.log("Telegram WebApp SDK загружен!");
+                Telegram.WebApp.sendData(JSON.stringify(data));
+                console.log("Данные отправлены!");
+                Telegram.WebApp.close(); // Закрываем Mini App
+            } else {
+                console.error("Telegram WebApp SDK не загружен!");
             }
-
-            // Загружаем данные при открытии Mini App
-            loadDataFromGoogleSheets();
-
-            // Обработка отправки формы
-            const form = document.getElementById('recordForm');
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                const data = {
-                    drawingName: document.getElementById('drawingName').value,
-                    operationType: document.getElementById('operationType').value,
-                    productCount: document.getElementById('productCount').value,
-                    setupTime: document.getElementById('setupTime').value,
-                    manufacturingTime: document.getElementById('manufacturingTime').value,
-                    defect: document.getElementById('defect').value,
-                    causeOfDefect: document.getElementById('causeOfDefect').value,
-                    notes: document.getElementById('notes').value,
-                };
-
-                console.log("Данные для отправки:", data);
-
-                if (window.Telegram && Telegram.WebApp) {
-                    Telegram.WebApp.sendData(JSON.stringify(data));
-                    Telegram.WebApp.close();
-                } else {
-                    console.error("Telegram WebApp SDK не загружен!");
-                }
-            });
         });
     </script>
 </body>
