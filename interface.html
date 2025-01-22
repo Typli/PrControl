@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Добавить запись</h1>
+    <form id="recordForm">
+        <div class="form-group">
+            <label for="drawingName">Название чертежа:</label>
+            <input type="text" id="drawingName" required>
+        </div>
+        <div class="form-group">
+            <label for="operationType">Тип операции:</label>
+            <select id="operationType" required>
+                <option value="Токарная">Токарная</option>
+                <option value="Фрезерная">Фрезерная</option>
+                <option value="Слесарная">Слесарная</option>
+                <option value="Шлифовальная">Шлифовальная</option>
+                <option value="Сверлильная">Сверлильная</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="productCount">Количество изделий:</label>
+            <input type="number" id="productCount" required>
+        </div>
+        <button type="submit">Сохранить</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('recordForm');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                drawingName: document.getElementById('drawingName').value,
+                operationType: document.getElementById('operationType').value,
+                productCount: document.getElementById('productCount').value,
+            };
+
+            // Отправляем данные в бота
+            Telegram.WebApp.sendData(JSON.stringify(data));
+            Telegram.WebApp.close(); // Закрываем Mini App
+        });
+    </script>
+</body>
+</html>
